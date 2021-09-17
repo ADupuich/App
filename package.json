@@ -1,0 +1,16 @@
+{
+  "name": "pochlib",
+  "version": "1.0.0",
+  "description": "application pour le projet 6 formation openclassrooms developpeur salesforce",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "sass": "sass --watch ./sass/main-pochLib.scss:./style-pochLib.css --style compressed"
+  },
+  "repository": {
+    "type": "git",
+    "url": "C:/Users/Amaur/git/pochLib"
+  },
+  "author": "Amaury Dupuich",
+  "license": "ISC"
+}
