@@ -1,35 +1,57 @@
-@mixin bouton {
+@mixin btn {
     border: 1px solid green;
     width : 12rem;
     height: 3rem;
     line-height: 3rem;
     background-color: aquamarine;
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
+    cursor: pointer;  
+    }
+//breakpoint value to be responsive
+$breakpoints: (mobile: 470px);
+//mixin to stock @media and simplify the code after
+@mixin mobile-only {
+    @media screen and (max-width : map-get($breakpoints , mobile)){
+        display: none;
+    }  
+}
+
+.btn {
+    @include btn()
     
 }
 
-.tittle {
+.btn--cancel {
+    background-color : rgb(238, 91, 91);
+    
+} 
+.title, .h2{
     overflow: hidden;
-    margin: auto;
-
-}
-
-.h2 {
-    @include bouton();
-    
+    text-align: center;
 }
 
 img {
-    width: 10%;
-    height: 10%;
     position: absolute;
     top:3px;
     right : 3px;
     border : 1px solid black; 
+    @include mobile-only;
+}
+
+#block{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    height: 350px;
+    .searchArea
+    {
+        background-color: aqua;
+    }
+    .searchArea:nth-child(4)
+    {
+        background-color: blue;
+    }
 }
 body{
     font-family: Arial, Helvetica, sans-serif;
-    text-align: center;
-}
+}   

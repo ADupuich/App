@@ -5,18 +5,28 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="./css/style-pochLib.css">
+
   	</head>
   	<body>
 		<div id="myBooks">
-			<img src="./Images/logo.png" alt="logoPoch-Lib" title="Poch'Lib" id="logoPoch-Lib">
+			<img src="./Images/logo.png" width="125" height="125" alt="logoPoch-Lib" title="Poch'Lib" id="logoPoch-Lib">
 			<h1 class="title">Poch'Lib
 			</h1>
 			<h2 class="h2">Nouveau Livre</h2>
+			<input type="button" id="add" class="btn" value="Ajouter un livre">
+			<div id="block">
+				<form method="POST" action="traitement.php">
+						<label>Titre du livre</label> : <input class="searchArea" type="search" name="booksTitle" required/>
+						<label>Auteur</label> : <input class="searchArea" type="search" name="booksAutor" required/>
+				</form>
+				<input class="btn" type="button" value="Rechercher">
+				<input class="btn btn--cancel" type="button" value="Annuler">
+			</div>
 			<hr>
 			<div id="content">
 				<h2>Ma poch'liste</h2>
 			</div>
 		</div>
-		<script src="./main-pochLib.js"></script>
+		<script type="text/javascript" src="./main-pochLib.js"></script>
   	</body>
 </html>
