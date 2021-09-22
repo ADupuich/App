@@ -1,8 +1,12 @@
-const selectClassH2 = document.getElementById("add");
+const btnAdd = document.getElementById("addBook");
+const btnCcl =document.getElementById("cancel");
+const searchZone = document.getElementById("searchZone");
 
-selectClassH2.addEventListener('click', function(){
-
-    selectClassH2.hidden = true;
-
+btnAdd.addEventListener('click', function(){
+        btnAdd.style.display = "none";
+        searchZone.style.display = "flex";
 })
-
+btnCcl.addEventListener('click', function(){
+    btnAdd.style.display = "block";
+    searchZone.style.display = "none";
+})

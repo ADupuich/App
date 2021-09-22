@@ -5,6 +5,7 @@
     line-height: 3rem;
     background-color: aquamarine;
     cursor: pointer;  
+    margin-bottom: .25rem;
     }
 //breakpoint value to be responsive
 $breakpoints: (mobile: 470px);
@@ -17,18 +18,24 @@ $breakpoints: (mobile: 470px);
 
 .btn {
     @include btn()
-    
 }
 
 .btn--cancel {
-    background-color : rgb(238, 91, 91);
-    
-} 
-.title, .h2{
-    overflow: hidden;
+    background-color : rgb(238, 91, 91);  
+}
+#addBook{
     text-align: center;
 }
 
+label
+{
+display: block;
+margin-top: .25rem;
+}
+.title, h2{
+    overflow: hidden;
+    text-align: center;
+}
 img {
     position: absolute;
     top:3px;
@@ -36,20 +43,15 @@ img {
     border : 1px solid black; 
     @include mobile-only;
 }
-
-#block{
-    display: flex;
+#searchZone{
+    display: none;
     flex-direction: column;
     justify-content: space-around;
-    flex-wrap: wrap;
-    height: 350px;
-    .searchArea
-    {
-        background-color: aqua;
+    height: 205px;
+    @media (max-width : 1024px){
+    .searchArea{
+        width: 100%;
     }
-    .searchArea:nth-child(4)
-    {
-        background-color: blue;
     }
 }
 body{
