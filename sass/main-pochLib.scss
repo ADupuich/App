@@ -25,12 +25,15 @@ $breakpoints: (mobile: 470px);
 }
 #addBook{
     text-align: center;
+    margin-top: 1rem;
 }
 
 label
 {
 display: block;
-margin-top: .25rem;
+margin-top: .5rem;
+font-size: small;
+text-align: left;
 }
 .title, h2{
     overflow: hidden;
@@ -44,10 +47,13 @@ img {
     @include mobile-only;
 }
 #searchZone{
-    display: none;
+    //important display none permet de garder #searchZone caché
+    display:none;
+    //flex properties are here because when #searchZone is shown his display becomes 'flex'
     flex-direction: column;
-    justify-content: space-around;
-    height: 205px;
+    justify-content: space-between;
+    align-items: flex-start;
+    height: 250px;
     @media (max-width : 1024px){
     .searchArea{
         width: 100%;

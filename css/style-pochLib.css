@@ -14,11 +14,14 @@
 
 #addBook {
   text-align: center;
+  margin-top: 1rem;
 }
 
 label {
   display: block;
-  margin-top: 0.25rem;
+  margin-top: 0.5rem;
+  font-size: small;
+  text-align: left;
 }
 
 .title, h2 {
@@ -41,8 +44,9 @@ img {
 #searchZone {
   display: none;
   flex-direction: column;
-  justify-content: space-around;
-  height: 205px;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: 250px;
 }
 @media (max-width: 1024px) {
   #searchZone .searchArea {
