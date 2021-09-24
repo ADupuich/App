@@ -6,6 +6,7 @@
   background-color: aquamarine;
   cursor: pointer;
   margin-bottom: 0.25rem;
+  border-radius: 0.3rem;
 }
 
 .btn--cancel {
@@ -17,45 +18,73 @@
   margin-top: 1rem;
 }
 
-label {
-  display: block;
-  margin-top: 0.5rem;
-  font-size: small;
-  text-align: left;
-}
-
-.title, h2 {
-  overflow: hidden;
-  text-align: center;
-}
-
 img {
-  position: absolute;
-  top: 3px;
-  right: 3px;
-  border: 1px solid black;
+  height: 180px;
+  width: auto;
 }
-@media screen and (max-width: 470px) {
-  img {
-    display: none;
-  }
+
+h1 {
+  background-image: url "./Images/logo.png" no-repeat top right;
 }
 
 #searchZone {
   display: none;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
-  height: 250px;
+  text-align: left;
+  font-size: small;
 }
-@media (max-width: 1024px) {
-  #searchZone .searchArea {
-    width: 100%;
-  }
+#searchZone label {
+  display: block;
+  margin-bottom: 0.25rem;
+  margin-top: 0.5rem;
+}
+#searchZone .searchArea {
+  width: 98%;
+}
+
+#searchResults {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 2rem;
+}
+
+.result {
+  color: black;
+  background-color: #b6b2b2;
+  margin-left: auto;
+  margin-right: auto;
+}
+.result--area {
+  border: 1.5px solid black;
+  height: 390px;
+  width: 320px;
+}
+.result__text {
+  font-size: small;
+  margin-left: 5px;
+  margin-right: 5px;
+  font-weight: normal;
+  text-align: left;
+}
+.result__text--gras {
+  font-weight: bold;
+}
+.result__text--italique {
+  font-style: italic;
+}
+.result__image {
+  display: flex;
+  justify-content: center;
+  height: 50%;
+  width: 100%;
+}
+.result__image img {
+  position: absolute;
 }
 
 body {
   font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
 }
 
 /*# sourceMappingURL=style-pochLib.css.map */

@@ -6,6 +6,7 @@
     background-color: aquamarine;
     cursor: pointer;  
     margin-bottom: .25rem;
+    border-radius: .3rem;
     }
 //breakpoint value to be responsive
 $breakpoints: (mobile: 470px);
@@ -15,7 +16,6 @@ $breakpoints: (mobile: 470px);
         display: none;
     }  
 }
-
 .btn {
     @include btn()
 }
@@ -27,39 +27,72 @@ $breakpoints: (mobile: 470px);
     text-align: center;
     margin-top: 1rem;
 }
+img{
+    height: 180px;
+    width: auto;
+}
+h1{
+    background-image: url ("./Images/logo.png") no-repeat top right;
+}
 
-label
-{
-display: block;
-margin-top: .5rem;
-font-size: small;
-text-align: left;
-}
-.title, h2{
-    overflow: hidden;
-    text-align: center;
-}
-img {
-    position: absolute;
-    top:3px;
-    right : 3px;
-    border : 1px solid black; 
-    @include mobile-only;
-}
 #searchZone{
     //important display none permet de garder #searchZone caché
     display:none;
     //flex properties are here because when #searchZone is shown his display becomes 'flex'
     flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start;
-    height: 250px;
-    @media (max-width : 1024px){
-    .searchArea{
-        width: 100%;
+    text-align: left;
+    font-size: small;
+    label{
+        display: block;
+        margin-bottom: 0.25rem;
+        margin-top: .5rem;
     }
+    .searchArea{
+        width: 98%;
+        } 
+}
+
+#searchResults{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    grid-gap: 2rem;
+}
+
+.result{
+    color:black;
+    background-color: rgb(182, 178, 178);
+    margin-left: auto;
+    margin-right: auto;
+    &--area {
+        border: 1.5px solid black;
+        height: 390px;
+        width:320px;
+    }
+    &__text{
+        font-size: small;
+        margin-left: 5px;
+        margin-right: 5px;
+        font-weight: normal;
+        text-align: left;
+        &--gras {
+            font-weight: bold;
+        }
+        &--italique {
+            font-style: italic;
+        }
+    }
+    &__image {
+        display: flex;
+        justify-content: center;
+        height:50%;
+        width: 100%;
+        img{    
+            position: absolute;
+        }
     }
 }
+
 body{
     font-family: Arial, Helvetica, sans-serif;
-}   
+    text-align: center;
+}  
