@@ -48,9 +48,12 @@ btnAddBook.addEventListener('click', function(){
 })
 
 //-_-_-_-_-_-_-_-_-_-_-_-_-_-  Activation du bouton Rechercher -_-_-_-_-_-_-_-_-_-_-_-_-_- 
-//créer la zone et ses id
-let resultsLoc1 = document.createElement("div");
-resultsLoc1.setAttribute('id','results');
+
+let fvrAreaAdd1 = document.createElement('div');
+fvrAreaAdd1.setAttribute('id','fvrs');
+let fvrAreaAdd2 = document.getElementById('content');
+fvrAreaAdd2.appendChild(fvrAreaAdd1);
+
 //obtient les éléments référents
 const btnSearch = document.getElementById("search");
 //listener sur le bouton Rechercher #search
@@ -58,18 +61,22 @@ btnSearch.addEventListener('click',goSearch);
 //Connections aux API
 //API GoogleBooks
 //récupérer les infons nécessaires à la recherche
+
+
 function goSearch(){
-    //obtient le titre référent
+    //obtient les éléménts nécessaires à préparer la requete API
     const searchTitle = document.getElementById('booksTitle').value;
     const searchAuthor = document.getElementById('booksAuthor').value;
+    //formalise la requete telle qu'attendue par le service web
     const searchItem = searchTitle+'+inauthor:'+searchAuthor+'&key=AIzaSyDPf6SpjjbPbG-oKYVPGHv1mJvXJztD7Mw';
     
+    //realise le fetch
     fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchItem}`,{
         method: "GET",
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
-        },
+        }
     })
     .then(function(res) {
         if (res.ok) {
@@ -78,6 +85,9 @@ function goSearch(){
     })
     .then(function(value) {
         //obtient les éléments pour placer le nouveau child
+        //créer la zone et ses id
+        let resultsLoc1 = document.createElement("div");
+        resultsLoc1.setAttribute('id','results');
         let resultsLoc2 = document.querySelector('h2');
         resultsLoc2.appendChild(resultsLoc1);
         resultsLoc1.innerHTML = '<div><h2>Résultats de la recherche</h2></div>'+
@@ -89,43 +99,70 @@ function goSearch(){
                 let element = value.items[index];
 
                 let data = {
+                    "i": index,
                     "id": element.id,
                     "title": element.volumeInfo.title,
                     "authors": element.volumeInfo.authors,
                     "description": element.volumeInfo.description ? element.volumeInfo.description.replace(/'/g, "\"").substring(0, 200) : "Aucune information disponible",
                     "image": element.volumeInfo.imageLinks ? element.volumeInfo.imageLinks.thumbnail : "./images/unavailable.png"
                 }
-
+                
                 resultsLoc3.innerHTML +=
                     "<div class='result result--area' >"+
                     "<div class='result result__text'>"+
+                    "<a id=fvrAdd class='result__book-unregistered'><img src='./images/outline_bookmark_border_black_24dp.png' alt ='fvr'></a>"+
                     "<p class='result__text--gras'>Titre: " +data.title+"</p>"+
                     "<p class='result__text--gras result__text--italique'>Id : " +data.id+"</p>"+
                     "<p>Auteur : "+data.authors+"</p>"+
-                    "<p class>Description : "+data.description+"</p>"+
-                    //"</div>" + "<div class='container2'>" +
+                    "<p class> Description : "+data.description+"</p>"+
                     //"<i class='fas fa-bookmark' onClick='saveStorage(" + JSON.stringify(data) + ")'></i>" + "</div> </div>" +
-                    "<div class='result__image'><img src=" + data.image + " alt='image du livre' /></div></div></div>";
-            }
-
+                    "<div class='result__image'><img src=" + data.image + " alt='image du livre' /></div></div></div>";         
+                    //listener sur bookmark
+                    let fvrAdd = document.getElementById('fvrAdd');
+                    fvrAdd.addEventListener('click', enregistrerFav(JSON.stringify(data)));
+                }
         } else {
-            resultsLoc3.innerHTML = "<p>Aucun livre n’a été trouvé</p><hr>"
+            resultsLoc1.innerHTML = '<hr><div><h2>Résultats de la recherche</h2></div>'+
+            '<div id="searchResults"></div><p>Aucun livre n’a été trouvé</p>'
         }
-    })
+    })   
 }
-//-_-_-_-_-_-_-_-_-_-_-_-_-_- Activation du bouton cancel -_-_-_-_-_-_-_-_-_-_-_-_-_- 
 
-//(doit être placée dans le code après la création #Results)
-//obtient les éléments de référence
-const btnCcl =document.getElementById("cancel");
-const searchZone = document.getElementById("searchZone");
-console.log(resultsLoc1);
-//listener sur le bouton Annuler #cancel
-btnCcl.addEventListener('click', function(){
-    //le bouton Ajouter un livre #addBook apparaît
-    btnAddBook.style.display = "block";
-    //la zone de recherche #searchZone disparaît
-    searchZone.style.display = "none";
-    resultsLoc1.innerHTML = "";
+function enregistrerFav(items) {
+//Rempli le sessionStorage avec l'item sélectionné
+//de quel objet s'agit-il ? => data : en faire un JSON
+sessionStorage.setItem('myFavBook',items)
+//retrouve l'item pour l'inclure dans les favoris
+//Stock le favoris dans #content
+//crée les éléments nécessaires pour accueillir le résultat
+const AddFavSignet1 = document.createElement("div")
+AddFavSignet1.setAttribute('id','favSignet')
+const AddFavSignet2 = document.getElementById('content')
+AddFavSignet2.appendChild(AddFavSignet1)
+
+//Récupère les données 
+//recuperer l'objet en session storage
+var data_json = sessionStorage.getItem('myFavBook');
+var data = JSON.parse(data_json);
+console.log(data)
+//lance la boucle pour récupérer les données du livre
+AddFavSignet1.innerHTML +=
+    "<div class='result result--area' >"+
+    "<div class='result result__text'>"+
+    //"<a id=fvrAdd class='result__book-unregistered'><img src='./images/outline_bookmark_border_black_24dp.png' alt ='fvr'></a>"+
+    "<p class='result__text--gras'>Titre: " +data.title+"</p>"+
+    "<p class='result__text--gras result__text--italique'>Id : " +data.id+"</p>"+
+    "<p>Auteur : "+data.authors+"</p>"+
+    "<p class> Description : "+data.description+"</p>"+
+    //"<i class='fas fa-bookmark' onClick='saveStorage(" + JSON.stringify(data) + ")'></i>" + "</div> </div>" +
+    "<div class='result__image'><img src=" +data.image + " alt='image du livre' /></div></div></div>";
+}
+
+//-_-_-_-_-_-_-_-_-_-_-_-_-_-  Activation du bouton Annuler -_-_-_-_-_-_-_-_-_-_-_-_-_- 
+//obtient l'élément de référence
+const btnCclBook = document.getElementById("cancel")
+//ecouter les événements sur le bouton #addBook
+btnCclBook.addEventListener('click', function(){
     window.location.reload()
+    sessionStorage.clear()
 })
