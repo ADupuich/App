@@ -47,6 +47,15 @@ btnAddBook.addEventListener('click', function(){
         searchZone.style.display="flex";
 })
 
+//-_-_-_-_-_-_-_-_-_-_-_-_-_-  Activation du bouton Annuler -_-_-_-_-_-_-_-_-_-_-_-_-_- 
+//obtient l'élément de référence
+const btnCclBook = document.getElementById("cancel")
+//ecouter les événements sur le bouton #addBook
+btnCclBook.addEventListener('click', function(){
+    window.location.reload()
+    sessionStorage.clear()
+})
+
 //-_-_-_-_-_-_-_-_-_-_-_-_-_-  Activation du bouton Rechercher -_-_-_-_-_-_-_-_-_-_-_-_-_- 
 
 let fvrAreaAdd1 = document.createElement('div');
@@ -98,7 +107,7 @@ function goSearch(){
             for (let index = 0; index < value.items.length; index++) {
                 let element = value.items[index];
 
-                let data = {
+                let book = {
                     "i": index,
                     "id": element.id,
                     "title": element.volumeInfo.title,
@@ -111,58 +120,51 @@ function goSearch(){
                     "<div class='result result--area' >"+
                     "<div class='result result__text'>"+
                     "<a id=fvrAdd class='result__book-unregistered'><img src='./images/outline_bookmark_border_black_24dp.png' alt ='fvr'></a>"+
-                    "<p class='result__text--gras'>Titre: " +data.title+"</p>"+
-                    "<p class='result__text--gras result__text--italique'>Id : " +data.id+"</p>"+
-                    "<p>Auteur : "+data.authors+"</p>"+
-                    "<p class> Description : "+data.description+"</p>"+
+                    "<p class='result__text--gras'>Titre: " +book.title+"</p>"+
+                    "<p class='result__text--gras result__text--italique'>Id : " +book.id+"</p>"+
+                    "<p>Auteur : "+book.authors+"</p>"+
+                    "<p class> Description : "+book.description+"</p>"+
                     //"<i class='fas fa-bookmark' onClick='saveStorage(" + JSON.stringify(data) + ")'></i>" + "</div> </div>" +
-                    "<div class='result__image'><img src=" + data.image + " alt='image du livre' /></div></div></div>";         
+                    "<div class='result__image'><img src=" + book.image + " alt='image du livre' /></div></div></div>";         
                     //listener sur bookmark
                     let fvrAdd = document.getElementById('fvrAdd');
-                    fvrAdd.addEventListener('click', enregistrerFav(JSON.stringify(data)));
+                    fvrAdd.addEventListener('click', enregistrerFav(JSON.stringify(book)));
                 }
+                
         } else {
             resultsLoc1.innerHTML = '<hr><div><h2>Résultats de la recherche</h2></div>'+
             '<div id="searchResults"></div><p>Aucun livre n’a été trouvé</p>'
         }
     })   
+    }
+
+    function enregistrerFav(items) {
+    //Rempli le sessionStorage avec l'item sélectionné
+    //de quel objet s'agit-il ? => data : en faire un JSON
+    sessionStorage.setItem('myFavsBook',items)
+    //retrouve l'item pour l'inclure dans les favoris
+    
+    //Stock le favoris dans #content
+    //crée les éléments nécessaires pour accueillir le résultat
+    const AddFavSignet1 = document.createElement("div")
+    AddFavSignet1.setAttribute('id','favSignet')
+    const AddFavSignet2 = document.getElementById('content')
+    AddFavSignet2.appendChild(AddFavSignet1)
+
+    //Récupère les données 
+    //recuperer l'objet en session storage
+    var data_json = sessionStorage.getItem('myFavsBook');
+    var data = JSON.parse(data_json);
+    console.log(data)
+    //lance la boucle pour récupérer les données du livre
+    AddFavSignet1.innerHTML +=
+        "<div class='result result--area' >"+
+        "<div class='result result__text'>"+
+        //"<a id=fvrAdd class='result__book-unregistered'><img src='./images/outline_bookmark_border_black_24dp.png' alt ='fvr'></a>"+
+        "<p class='result__text--gras'>Titre: " +data.title+"</p>"+
+        "<p class='result__text--gras result__text--italique'>Id : " +data.id+"</p>"+
+        "<p>Auteur : "+data.authors+"</p>"+
+        "<p class> Description : "+data.description+"</p>"+
+        //"<i class='fas fa-bookmark' onClick='saveStorage(" + JSON.stringify(data) + ")'></i>" + "</div> </div>" +
+        "<div class='result__image'><img src=" +data.image + " alt='image du livre' /></div></div></div>";
 }
-
-function enregistrerFav(items) {
-//Rempli le sessionStorage avec l'item sélectionné
-//de quel objet s'agit-il ? => data : en faire un JSON
-sessionStorage.setItem('myFavBook',items)
-//retrouve l'item pour l'inclure dans les favoris
-//Stock le favoris dans #content
-//crée les éléments nécessaires pour accueillir le résultat
-const AddFavSignet1 = document.createElement("div")
-AddFavSignet1.setAttribute('id','favSignet')
-const AddFavSignet2 = document.getElementById('content')
-AddFavSignet2.appendChild(AddFavSignet1)
-
-//Récupère les données 
-//recuperer l'objet en session storage
-var data_json = sessionStorage.getItem('myFavBook');
-var data = JSON.parse(data_json);
-console.log(data)
-//lance la boucle pour récupérer les données du livre
-AddFavSignet1.innerHTML +=
-    "<div class='result result--area' >"+
-    "<div class='result result__text'>"+
-    //"<a id=fvrAdd class='result__book-unregistered'><img src='./images/outline_bookmark_border_black_24dp.png' alt ='fvr'></a>"+
-    "<p class='result__text--gras'>Titre: " +data.title+"</p>"+
-    "<p class='result__text--gras result__text--italique'>Id : " +data.id+"</p>"+
-    "<p>Auteur : "+data.authors+"</p>"+
-    "<p class> Description : "+data.description+"</p>"+
-    //"<i class='fas fa-bookmark' onClick='saveStorage(" + JSON.stringify(data) + ")'></i>" + "</div> </div>" +
-    "<div class='result__image'><img src=" +data.image + " alt='image du livre' /></div></div></div>";
-}
-
-//-_-_-_-_-_-_-_-_-_-_-_-_-_-  Activation du bouton Annuler -_-_-_-_-_-_-_-_-_-_-_-_-_- 
-//obtient l'élément de référence
-const btnCclBook = document.getElementById("cancel")
-//ecouter les événements sur le bouton #addBook
-btnCclBook.addEventListener('click', function(){
-    window.location.reload()
-    sessionStorage.clear()
-})

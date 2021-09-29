@@ -5,26 +5,16 @@
   line-height: 3rem;
   background-color: aquamarine;
   cursor: pointer;
-  margin-bottom: 0.25rem;
+  margin-top: 1rem;
   border-radius: 0.3rem;
 }
-
 .btn--cancel {
   background-color: #ee5b5b;
-}
-
-#addBook {
-  text-align: center;
-  margin-top: 1rem;
 }
 
 img {
   height: 180px;
   width: auto;
-}
-
-h1 {
-  background-image: url "./Images/logo.png" no-repeat top right;
 }
 
 #searchZone {
@@ -40,6 +30,7 @@ h1 {
 }
 #searchZone .searchArea {
   width: 98%;
+  max-width: 1024px;
 }
 
 #searchResults {
@@ -47,9 +38,15 @@ h1 {
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 2rem;
 }
+@media screen and (max-width: 700px) {
+  #searchResults {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+}
 
 .result {
-  color: black;
   background-color: #b6b2b2;
   margin-left: auto;
   margin-right: auto;
@@ -78,9 +75,6 @@ h1 {
   justify-content: center;
   height: 50%;
   width: 100%;
-}
-.result__image img {
-  position: absolute;
 }
 .result__book-unregistered {
   position: absolute;
