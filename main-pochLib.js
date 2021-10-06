@@ -3,29 +3,17 @@ let h1Add1 = document.querySelector("h1");
 h1Add1.innerHTML = "Poch'Lib <hr>"
 
 //-_-_-_-_-_-_-_-_-_-_-_-_-_- Création du bouton Ajouter un livre #addBook -_-_-_-_-_-_-_-_-_-_-_-_-_-
-
-//crée un nouvel élément block de type div
 let divAdd1=document.createElement("div");
-//ajoute l'attibut id=addBook à divAdd
-divAdd1.setAttribute('id','addBook');
-//obtient l'élément de référence 
+divAdd1.setAttribute('id','addBook'); 
 let divAdd2 = document.querySelector("h2");
-//ajoute l'élément divAdd1 comme enfant de divAdd2
 divAdd2.appendChild(divAdd1);
-//ajoute le contenu HTML comme enfant de h2
 divAdd1.innerHTML = "<input class='btn btn--add' type='button' value='Ajouter un livre'>";
 
 //-_-_-_-_-_-_-_-_-_- Création de la zone pour la recherche des livres #searchZone -_-_-_-_-_-_-_-_-_-
-
-//crée un nouvel élément block de type div
 let searchZoneElts1 = document.createElement("div");
-//ajoute l'attibut id=searchZone à searchZoneElts
 searchZoneElts1.setAttribute('id','searchZone');
-//obtient l'élément de référence
 let searchZoneElts2 = document.querySelector("h2");
-//ajoute l'élément searchZoneElts1 comme enfant de divAdd2
 searchZoneElts2.appendChild(searchZoneElts1);
-//ajoute le contenu HTML dans #searchZone
 searchZoneElts1.innerHTML = 
 "<form method='POST' action='traitement.php'>"+
 "<p><label for='booksTitle'>Titre du livre :</label>"+
@@ -35,15 +23,23 @@ searchZoneElts1.innerHTML =
 "</form><input id='search' class='btn' type='button' value='Rechercher'>"+
 "<input id='cancel'class='btn btn--cancel' type='button' value='Annuler'>";
 
-//-_-_-_-_-_-_-_-_-_-_-_-_-_- Activation du bouton Ajouter un livre #addBook -_-_-_-_-_-_-_-_-_-_-_-_-_- 
+//-_-_-_-_-_-_-_-_-_-_-_-_-_- Création de zone utile à postériori -_-_-_-_-_-_-_-_-_-_-_-_-_-
+//zone d'affichage des résultats de la recherche
+let resultsLoc1 = document.createElement("div");
+resultsLoc1.setAttribute('id','results');
+let resultsLoc2 = document.querySelector('h2');
+resultsLoc2.appendChild(resultsLoc1);
 
-//obtient l'élément de référence
+//zone d'affichage des Favoris
+let favritesLoc1 = document.createElement('div');
+favritesLoc1.setAttribute('id','fvrs');
+let favritesLoc2 = document.getElementById('content');
+favritesLoc2.appendChild(favritesLoc1);
+
+//-_-_-_-_-_-_-_-_-_-_-_-_-_- Activation du bouton Ajouter un livre #addBook -_-_-_-_-_-_-_-_-_-_-_-_-_- 
 const btnAddBook = document.getElementById("addBook");
-//ecouter les événements sur le bouton #addBook
 btnAddBook.addEventListener('click', function(){
-        //le boutton Ajouter un livre disparaît
         btnAddBook.style.display="none";
-        //la zone de recherche #searchZone apparaît
         searchZone.style.display="flex";
 })
 
@@ -52,27 +48,15 @@ btnAddBook.addEventListener('click', function(){
 const btnCclBook = document.getElementById("cancel")
 //ecouter les événements sur le bouton #addBook
 btnCclBook.addEventListener('click', function(){
-    window.location.reload()
-    afficherFav();
+    location.reload()
 })
 
 //-_-_-_-_-_-_-_-_-_-_-_-_-_-  Activation du bouton Rechercher -_-_-_-_-_-_-_-_-_-_-_-_-_- 
-
-let fvrAreaAdd1 = document.createElement('div');
-fvrAreaAdd1.setAttribute('id','fvrs');
-let fvrAreaAdd2 = document.getElementById('content');
-fvrAreaAdd2.appendChild(fvrAreaAdd1);
-
-//obtient les éléments référents
 const btnSearch = document.getElementById("search");
-//listener sur le bouton Rechercher #search
-btnSearch.addEventListener('click',goSearch);
-//Connections aux API
-//API GoogleBooks
-//récupérer les infons nécessaires à la recherche
-var save = [];
+btnSearch.addEventListener('click',lancerRecherche);
 
-function goSearch(){
+//Lancement de la recherche
+function lancerRecherche(){
     //obtient les éléménts nécessaires à préparer la requete API
     const searchTitle = document.getElementById('booksTitle').value;
     const searchAuthor = document.getElementById('booksAuthor').value;
@@ -93,16 +77,10 @@ function goSearch(){
         }
     })
     .then(function(value) {
-        //obtient les éléments pour placer le nouveau child
-        //créer la zone et ses id
-        let resultsLoc1 = document.createElement("div");
-        resultsLoc1.setAttribute('id','results');
-        let resultsLoc2 = document.querySelector('h2');
-        resultsLoc2.appendChild(resultsLoc1);
-        resultsLoc1.innerHTML = '<div><h2>Résultats de la recherche</h2></div>'+
-        '<div id="searchResults"></div>';
-        //cibler cet nouvel id
+        resultsLoc1.innerHTML = '<hr><div><h2>Résultats de la recherche</h2></div>'+'<div id="searchResults"></div>';
         let resultsLoc3 = document.getElementById('searchResults');
+        resultsLoc3.innerHTML = ""
+        //resultsLoc1.innerHTML += "<hr><div><h2>Résultats de la recherche</h2></div>"
         if (value.items) {
             for (let index = 0; index < value.items.length; index++) {
                 let element = value.items[index];
@@ -124,72 +102,66 @@ function goSearch(){
                     "<p class='result__text--gras result__text--italique'>Id : " +book.id+"</p>"+
                     "<p>Auteur : "+book.authors+"</p>"+
                     "<p class> Description : "+book.description+"</p>"+
-                    //"<i class='fas fa-bookmark' onClick='saveStorage(" + JSON.stringify(data) + ")'></i>" + "</div> </div>" +
                     "<div class='result__image'><img src=" + book.image + " alt='image du livre' /></div></div></div>";      
-                    //listener sur bookmark
-                    //let fvrAdd = document.getElementById('fvrAdd');
-                    //fvrAdd.addEventListener('click', enregistrerFav(JSON.stringify(book)));
-                    //But : sélectionner une instance précise de l'objet book
-                    //la méthode
                 }
-            afficherFav();     
         } else {
-            resultsLoc1.innerHTML = '<hr><div><h2>Résultats de la recherche</h2></div>'+
-            '<div id="searchResults"></div><p>Aucun livre n’a été trouvé</p>'
+            resultsLoc1.innerHTML +=
+            "<p>Aucun livre n’a été trouvé</p>"
         }
     })   
 }
 
+//-_-_-_-_-_-_-_-_-_-_-_-_-_- Fonction Ajouter aux Favoris -_-_-_-_-_-_-_-_-_-_-_-_-_- 
 function saveStorage(items){
-    save.push(items)
-    sessionStorage.setItem('books',JSON.stringify(save));
-    console.log("Est-ce que ce programme avance ?")
-    console.log(items)
-    console.log("save :"+JSON.stringify(save));
-    afficherFav()
-}
-    
-const AddFavSignet1 = document.createElement("div")
-AddFavSignet1.setAttribute('id','favSignet')
-const AddFavSignet2 = document.getElementById('content')
-AddFavSignet2.appendChild(AddFavSignet1)
-var array_list =[];
-    
-function afficherFav() {
-console.log("on est dans afficherFav");
-
-var storedArray = JSON.parse(sessionStorage.getItem("books"));
-if (storedArray.length >0) {
-    array_list.push(storedArray)
-} else {
-    sessionStorage.clear()
-}
-    if (save.length>0) {
-        for(i=0; i< save.length;i++) {
-            AddFavSignet1.innerHTML += 
-            "<div class='result result--area'>"+
-            "<div class='result result__text'>"+
-            //"<a id=fvrAdd class='result__book-unregistered'><img src='./images/outline_bookmark_border_black_24dp.png' alt ='fvr'></a>"+
-            "<p class='result__text--gras'>Titre: " +save[i].title+"</p>"+
-            "<p class='result__text--gras result__text--italique'>Id : " +save[i].id+"</p>"+
-            "<p>Auteur : "+save[i].authors+"</p>"+
-            "<p class> Description : "+save[i].description+"</p>"+
-            //"<i class='fas fa-bookmark' onClick='saveStorage(" + JSON.stringify(data) + ")'></i>" + "</div> </div>" +
-            "<div class='result__image'><img src=" +save[i].image + " alt='image du livre' /></div></div></div>"
-        }
-    } else {
-        for(i=0; i< storedArray.length;i++) {
-            AddFavSignet1.innerHTML += 
-            "<div class='result result--area'>"+
-            "<div class='result result__text'>"+
-            //"<a id=fvrAdd class='result__book-unregistered'><img src='./images/outline_bookmark_border_black_24dp.png' alt ='fvr'></a>"+
-            "<p class='result__text--gras'>Titre: " +storedArray[i].title+"</p>"+
-            "<p class='result__text--gras result__text--italique'>Id : " +storedArray[i].id+"</p>"+
-            "<p>Auteur : "+storedArray[i].authors+"</p>"+
-            "<p class> Description : "+storedArray[i].description+"</p>"+
-            //"<i class='fas fa-bookmark' onClick='saveStorage(" + JSON.stringify(data) + ")'></i>" + "</div> </div>" +
-            "<div class='result__image'><img src=" +storedArray[i].image + " alt='image du livre' /></div></div></div>"
-        }
-
+    var save
+    //si save est null ou que le sessionStorage est null alors initialise le tableau save
+    if (save == null && sessionStorage.getItem("books") == null){ 
+        save = []
     }
+    //Si save est vide et que le session storage CONTIENT des items alors copie le session Storage dans save 
+    if (save == null && sessionStorage.getItem("books") != null){
+        save = JSON.parse(sessionStorage.getItem("books"))
+    }
+    let state = true
+    var checkFavoritesArray = JSON.parse(sessionStorage.getItem("books"))
+    //si save contient des données, en comparer les id avec celle d'items, si l'id existe déjà alors produire l'alert
+    if (checkFavoritesArray != null) {
+        for (i=0;i<checkFavoritesArray.length;i++){
+            if(checkFavoritesArray[i].id === items.id) {
+                alert ("Vous avez déjà enregistré ce livre dans vos favoris")
+                state = false
+            }
+        }
+        // si l'id de l'id de l'items n'existe pas déjà, ajouter items à save et faire un storage
+        if (state) {
+            save.push(items)
+            sessionStorage.setItem('books',JSON.stringify(save));
+        }
+        //dans les autres cas, sauvegarder save dans le storage pour le réutiliser plus tard
+    } else {
+        save.push(items)
+        sessionStorage.setItem('books', JSON.stringify(save));
+    }
+    afficherFavoris()
 }
+
+//-_-_-_-_-_-_-_-_-_-_-_-_-_- Fonction Afficher les favoris -_-_-_-_-_-_-_-_-_-_-_-_-_- 
+function afficherFavoris() {
+    var toShowFavoritesArray = JSON.parse(sessionStorage.getItem("books"));
+        //important de remettre la zone d'affichage à zéro ici et pas ailleur spour maintenir l'affichage ok
+        favritesLoc1.innerHTML = ""
+        for(i=0; i< toShowFavoritesArray.length;i++) {
+            favritesLoc1.innerHTML += 
+            "<div class='result result--area'>"+
+            "<div class='result result__text'>"+
+            //"<a id=fvrAdd class='result__book-unregistered'><img src='./images/outline_bookmark_border_black_24dp.png' alt ='fvr'></a>"+
+            "<p class='result__text--gras'>Titre: " +toShowFavoritesArray[i].title+"</p>"+
+            "<p class='result__text--gras result__text--italique'>Id : " +toShowFavoritesArray[i].id+"</p>"+
+            "<p>Auteur : "+toShowFavoritesArray[i].authors+"</p>"+
+            "<p class> Description : "+toShowFavoritesArray[i].description+"</p>"+
+            //"<i class='fas fa-bookmark' onClick='saveStorage(" + JSON.stringify(data) + ")'></i>" + "</div> </div>" +
+            "<div class='result__image'><img src=" +toShowFavoritesArray[i].image + " alt='image du livre' /></div></div></div>"
+        }
+}
+
+window.addEventListener('DOMContentLoaded', afficherFavoris)
