@@ -32,7 +32,7 @@ resultsLoc2.appendChild(resultsLoc1);
 
 //zone d'affichage des Favoris
 let favritesLoc1 = document.createElement('div');
-favritesLoc1.setAttribute('id','fvrs');
+favritesLoc1.setAttribute('class','resultsZone');
 let favritesLoc2 = document.getElementById('content');
 favritesLoc2.appendChild(favritesLoc1);
 
@@ -79,21 +79,18 @@ function lancerRecherche(){
     .then(function(value) {
         resultsLoc1.innerHTML = '<hr><div><h2>Résultats de la recherche</h2></div>'+'<div id="searchResults"></div>';
         let resultsLoc3 = document.getElementById('searchResults');
+        resultsLoc3.setAttribute('class','resultsZone')
         resultsLoc3.innerHTML = ""
-        //resultsLoc1.innerHTML += "<hr><div><h2>Résultats de la recherche</h2></div>"
         if (value.items) {
             for (let index = 0; index < value.items.length; index++) {
                 let element = value.items[index];
-
                 let book = {
-                    "i": index,
                     "id": element.id,
                     "title": element.volumeInfo.title,
                     "authors": element.volumeInfo.authors,
                     "description": element.volumeInfo.description ? element.volumeInfo.description.replace(/'/g, "\"").substring(0, 200) : "Aucune information disponible",
                     "image": element.volumeInfo.imageLinks ? element.volumeInfo.imageLinks.thumbnail : "./images/unavailable.png"
                 }
-                
                 resultsLoc3.innerHTML +=
                     "<div class='result result--area' >"+
                     "<div class='result result__text'>"+
@@ -111,14 +108,18 @@ function lancerRecherche(){
     })   
 }
 
-//-_-_-_-_-_-_-_-_-_-_-_-_-_- Fonction Ajouter aux Favoris -_-_-_-_-_-_-_-_-_-_-_-_-_- 
-function saveStorage(items){
+//-_-_-_-_-_-_-_-_-_-_-_-_-_- Fonction Ajouter un Favori -_-_-_-_-_-_-_-_-_-_-_-_-_- 
+function saveStorage(itemToAdd){
+    console.log("ici cela fonctionne corrrectement : "+itemToAdd)
     var save
     //si save est null ou que le sessionStorage est null alors initialise le tableau save
     if (save == null && sessionStorage.getItem("books") == null){ 
         save = []
     }
-    //Si save est vide et que le session storage CONTIENT des items alors copie le session Storage dans save 
+    /*Si save est vide et que le session storage CONTIENT des items alors copie le session Storage dans save 
+    sinon le report de favoris d'une actualisation à l'autre ne se fait pas, car save se réinitialise à l'actualisation
+    et sauvera alors un tableau vide en fin de fonction
+    */
     if (save == null && sessionStorage.getItem("books") != null){
         save = JSON.parse(sessionStorage.getItem("books"))
     }
@@ -127,41 +128,57 @@ function saveStorage(items){
     //si save contient des données, en comparer les id avec celle d'items, si l'id existe déjà alors produire l'alert
     if (checkFavoritesArray != null) {
         for (i=0;i<checkFavoritesArray.length;i++){
-            if(checkFavoritesArray[i].id === items.id) {
+            if(checkFavoritesArray[i].id === itemToAdd.id) {
                 alert ("Vous avez déjà enregistré ce livre dans vos favoris")
                 state = false
             }
         }
-        // si l'id de l'id de l'items n'existe pas déjà, ajouter items à save et faire un storage
+        // si l'id de l'items n'existe pas déjà dans le storage, ajouter items à save et faire un storage de save
         if (state) {
-            save.push(items)
+            save.push(itemToAdd)
             sessionStorage.setItem('books',JSON.stringify(save));
         }
-        //dans les autres cas, sauvegarder save dans le storage pour le réutiliser plus tard
+        //si save est null (pour le premier favoris) sauvegarder save dans le storage
     } else {
-        save.push(items)
+        save.push(itemToAdd)
         sessionStorage.setItem('books', JSON.stringify(save));
     }
     afficherFavoris()
+}
+
+//-_-_-_-_-_-_-_-_-_-_-_-_-_- Fonction Supprimer un Favoris -_-_-_-_-_-_-_-_-_-_-_-_-_-
+function supprimerFavori(indexOfFavoriToDelete) {
+    var toDeleteFavoriArray = JSON.parse(sessionStorage.getItem("books"));
+    //indispensable sinon l'exécution du programme est bloquée
+    if (toDeleteFavoriArray != null){
+            for(i=0; i<toDeleteFavoriArray.length;i++) {
+                if(i === indexOfFavoriToDelete){
+                    toDeleteFavoriArray.splice(i, 1);
+                    sessionStorage.setItem('books', JSON.stringify(toDeleteFavoriArray))
+                }
+            }
+        afficherFavoris();
+    }
 }
 
 //-_-_-_-_-_-_-_-_-_-_-_-_-_- Fonction Afficher les favoris -_-_-_-_-_-_-_-_-_-_-_-_-_- 
 function afficherFavoris() {
     var toShowFavoritesArray = JSON.parse(sessionStorage.getItem("books"));
         //important de remettre la zone d'affichage à zéro ici et pas ailleur spour maintenir l'affichage ok
-        favritesLoc1.innerHTML = ""
-        for(i=0; i< toShowFavoritesArray.length;i++) {
-            favritesLoc1.innerHTML += 
-            "<div class='result result--area'>"+
-            "<div class='result result__text'>"+
-            //"<a id=fvrAdd class='result__book-unregistered'><img src='./images/outline_bookmark_border_black_24dp.png' alt ='fvr'></a>"+
-            "<p class='result__text--gras'>Titre: " +toShowFavoritesArray[i].title+"</p>"+
-            "<p class='result__text--gras result__text--italique'>Id : " +toShowFavoritesArray[i].id+"</p>"+
-            "<p>Auteur : "+toShowFavoritesArray[i].authors+"</p>"+
-            "<p class> Description : "+toShowFavoritesArray[i].description+"</p>"+
-            //"<i class='fas fa-bookmark' onClick='saveStorage(" + JSON.stringify(data) + ")'></i>" + "</div> </div>" +
-            "<div class='result__image'><img src=" +toShowFavoritesArray[i].image + " alt='image du livre' /></div></div></div>"
-        }
+        if (toShowFavoritesArray != null){
+            favritesLoc1.innerHTML = ""
+            for(i=0; i< toShowFavoritesArray.length;i++) {
+                favritesLoc1.innerHTML += 
+                "<div class='result result--area'>"+
+                "<div class='result result__text'>"+
+                "<button id=fvrAdd class='result__book-unregistered' onclick='supprimerFavori("+JSON.stringify(i)+")'><img src='./images/outline_delete_outline_black_24dp.png' alt ='fvr'></button>"+
+                "<p class='result__text--gras'>Titre: " +toShowFavoritesArray[i].title+"</p>"+
+                "<p class='result__text--gras result__text--italique'>Id : " +toShowFavoritesArray[i].id+"</p>"+
+                "<p>Auteur : "+toShowFavoritesArray[i].authors+"</p>"+
+                "<p class> Description : "+toShowFavoritesArray[i].description+"</p>"+
+                "<div class='result__image'><img src=" +toShowFavoritesArray[i].image + " alt='image du livre' /></div></div></div>"
+            } 
+        }               
 }
 
 window.addEventListener('DOMContentLoaded', afficherFavoris)
