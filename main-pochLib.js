@@ -15,7 +15,7 @@ searchZoneElts1.setAttribute('id','searchZone');
 let searchZoneElts2 = document.querySelector("h2");
 searchZoneElts2.appendChild(searchZoneElts1);
 searchZoneElts1.innerHTML = 
-"<form method='POST'>"+
+"<form method='POST' action =''>"+
 "<p><label for='booksTitle'>Titre du livre :</label>"+
 "<input class='searchArea' type='search' name='booksTitle' id='booksTitle' placeholder='Ex : le seigneur des anneaux' required/><br>"+
 "<label for='booksAuthor'>Auteur du livre :</label>"+
