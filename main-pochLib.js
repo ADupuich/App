@@ -15,12 +15,12 @@ searchZoneElts1.setAttribute('id','searchZone');
 let searchZoneElts2 = document.querySelector("h2");
 searchZoneElts2.appendChild(searchZoneElts1);
 searchZoneElts1.innerHTML = 
-"<form method='POST' action='traitement.php'>"+
+"<form method='POST'>"+
 "<p><label for='booksTitle'>Titre du livre :</label>"+
 "<input class='searchArea' type='search' name='booksTitle' id='booksTitle' placeholder='Ex : le seigneur des anneaux' required/><br>"+
 "<label for='booksAuthor'>Auteur du livre :</label>"+
-"<input class='searchArea' type='search' name='booksAuthor' id='booksAuthor' placeholder='Ex : tolkien' required/></p>"+
-"</form><input id='search' class='btn' type='button' value='Rechercher'>"+
+"<input class='searchArea' type='search' name='booksAuthor' id='booksAuthor' placeholder='Ex : tolkien' required/></p></form>"+
+"<input id='search' class='btn' type='button' value='Rechercher'>"+
 "<input id='cancel'class='btn btn--cancel' type='button' value='Annuler'>";
 
 //-_-_-_-_-_-_-_-_-_-_-_-_-_- Création de zone utile à postériori -_-_-_-_-_-_-_-_-_-_-_-_-_-
@@ -57,9 +57,11 @@ btnSearch.addEventListener('click',lancerRecherche);
 
 //Lancement de la recherche
 function lancerRecherche(){
+    //vérfiier que les champs ayant pour id #booksTitle et #booksAuthor sont bien renseignés
     //obtient les éléménts nécessaires à préparer la requete API
     const searchTitle = document.getElementById('booksTitle').value;
     const searchAuthor = document.getElementById('booksAuthor').value;
+    if (searchTitle != null && searchAuthor != null &&searchTitle != 0 && searchAuthor!=0){
     //formalise la requete telle qu'attendue par le service web
     const searchItem = searchTitle+'+inauthor:'+searchAuthor+'&key=AIzaSyDPf6SpjjbPbG-oKYVPGHv1mJvXJztD7Mw';
     
@@ -88,7 +90,7 @@ function lancerRecherche(){
                     "id": element.id,
                     "title": element.volumeInfo.title,
                     "authors": element.volumeInfo.authors,
-                    "description": element.volumeInfo.description ? element.volumeInfo.description.replace(/'/g, "\"").substring(0, 200) : "Aucune information disponible",
+                    "description": element.volumeInfo.description ? element.volumeInfo.description.replace(/'/g, "\"").substring(0, 200)+"..." : "Aucune information disponible",
                     "image": element.volumeInfo.imageLinks ? element.volumeInfo.imageLinks.thumbnail : "./images/unavailable.png"
                 }
                 resultsLoc3.innerHTML +=
@@ -105,12 +107,14 @@ function lancerRecherche(){
             resultsLoc1.innerHTML +=
             "<p>Aucun livre n’a été trouvé</p>"
         }
-    })   
+    }) 
+    } else {
+        alert ("Merci de vérfier que vous avez bien renseigné les champs auteur et/ou titre")
+    }  
 }
 
 //-_-_-_-_-_-_-_-_-_-_-_-_-_- Fonction Ajouter un Favori -_-_-_-_-_-_-_-_-_-_-_-_-_- 
 function saveStorage(itemToAdd){
-    console.log("ici cela fonctionne corrrectement : "+itemToAdd)
     var save
     //si save est null ou que le sessionStorage est null alors initialise le tableau save
     if (save == null && sessionStorage.getItem("books") == null){ 
